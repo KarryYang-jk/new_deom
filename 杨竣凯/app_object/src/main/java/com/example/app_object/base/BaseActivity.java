@@ -18,13 +18,12 @@ public abstract class BaseActivity<T> extends AppCompatActivity implements IBase
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         int layoutId = getLayout();
-        if (layoutId != 0) {
+        if (layoutId != 0)
             setContentView(layoutId);
-            App.getInstance().addActivity(this);
-            unbinder = ButterKnife.bind(this);
-            onViewCreated();
-            initListenner();
-        }
+        App.getInstance().addActivity(this);
+        unbinder = ButterKnife.bind(this);
+        onViewCreated();
+        initListenner();
     }
 
     protected abstract void initListenner();

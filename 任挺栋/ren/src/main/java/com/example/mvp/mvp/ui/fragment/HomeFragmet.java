@@ -7,6 +7,7 @@ import com.example.mvp.base.BaseFragment;
 import com.example.mvp.base.BasePresenter;
 import com.example.mvp.base.IBasePresenter;
 import com.example.mvp.base.IBaseView;
+import com.example.mvp.mvp.contract.Info;
 import com.example.mvp.mvp.presenter.HomePresenter;
 import com.example.mvp.mvp.ui.common.LazyFragment;
 
@@ -49,7 +50,7 @@ public class HomeFragmet extends LazyFragment {
 
     @Override
     protected BasePresenter createPresenter() {
-        return new HomePresenter();
+        return new HomePresenter(this);
     }
 
 
@@ -76,7 +77,21 @@ public class HomeFragmet extends LazyFragment {
 
     @Override
     public void stateScuess(Object o) {
+        switch(mType){
+            case 0:
 
+                break;
+            case 1:
+                break;
+            case 2:
+                break;
+            case 3:
+                if (o instanceof Info){
+                    String name = ((Info) o).getData().get(0).getName();
+                    Log.e("TAG", "stateScuess: "+name);
+                }
+                break;
+        }
     }
 
     @Override

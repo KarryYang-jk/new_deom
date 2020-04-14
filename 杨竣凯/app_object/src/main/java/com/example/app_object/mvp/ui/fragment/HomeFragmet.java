@@ -4,8 +4,11 @@ import android.util.Log;
 
 import com.example.app_object.R;
 import com.example.app_object.base.BasePresenter;
+import com.example.app_object.mvp.contract.ChaptersListInfo;
 import com.example.app_object.mvp.presenter.HomePresenter;
 import com.example.app_object.mvp.ui.common.LazyFragment;
+
+import java.util.List;
 
 
 public class HomeFragmet extends LazyFragment {
@@ -47,7 +50,7 @@ public class HomeFragmet extends LazyFragment {
 
     @Override
     protected BasePresenter createPresenter() {
-        return new HomePresenter();
+        return new HomePresenter(this);
     }
 
 
@@ -74,11 +77,29 @@ public class HomeFragmet extends LazyFragment {
 
     @Override
     public void stateScuess(Object o) {
-
+        switch (mType){
+            case 0:break;
+            case 1:break;
+            case 2:break;
+            case 3:
+                if (o instanceof ChaptersListInfo){
+                    List<ChaptersListInfo.DataBean> data = ((ChaptersListInfo) o).getData();
+                    String name = data.get(0).getName();
+                    Log.e("TAG","ssssssssssssssssssssssssss"+name);
+                }
+                break;
+        }
     }
 
     @Override
     public void stateError(String msg) {
-
+        switch (mType){
+            case 0:break;
+            case 1:break;
+            case 2:break;
+            case 3:
+                Log.e("TAG","SSS"+msg);
+                break;
+        }
     }
 }

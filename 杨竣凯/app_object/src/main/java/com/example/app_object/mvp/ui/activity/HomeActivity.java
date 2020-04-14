@@ -40,7 +40,7 @@ public class HomeActivity extends BaseActivity {
                     switchTab(2);
                     break;
                 case R.id.item_gongzhonghao:
-                    Log.e("TAG", "4444444444");
+                    Log.e("TAG", "3333333333");
                     switchTab(3);
                     break;
             }
@@ -75,29 +75,11 @@ public class HomeActivity extends BaseActivity {
         List<HomeFragmet> fragments = getHomeFragments();
         HomeAdapter homeAdapter = new HomeAdapter(getSupportFragmentManager(), fragments);
         mViewPager.setAdapter(homeAdapter);
-        mViewPager.setCurrentItem(0);
-        mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                    //当ViewPager页面切换的时候让下面的tab标签跟着切换
-                mBottomNv.getMenu().getItem(position).setChecked(true);
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
     }
 
     private List<HomeFragmet> getHomeFragments() {
         List<HomeFragmet> fragments = new ArrayList<HomeFragmet>();
-        for (int i = 0; i < mBottomNv.getChildCount(); i++) {
+        for (int i = 0; i < 4; i++) {
             HomeFragmet homeFragment = new HomeFragmet(i);
             fragments.add(homeFragment);
         }

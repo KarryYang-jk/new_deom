@@ -5,9 +5,12 @@ import android.util.Log;
 
 import com.example.app_object.app.App;
 import com.example.app_object.base.BasePresenter;
+import com.example.app_object.callback.IDataCallBack;
 import com.example.app_object.di.component.DaggerHomeComponent;
 import com.example.app_object.mvp.contract.ChaptersListInfo;
+import com.example.app_object.mvp.model.RxOperateImpl;
 import com.example.app_object.mvp.model.api.Constants;
+import com.example.app_object.mvp.ui.fragment.HomeFragmet;
 import com.google.gson.Gson;
 
 import java.io.IOException;
@@ -24,15 +27,16 @@ import javax.inject.Inject;
  *
  *
  * **/
-import okhttp3.Call;
-import okhttp3.Callback;
+import io.reactivex.disposables.Disposable;
 import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
+import okhttp3.ResponseBody;
+
 
 public class HomePresenter extends BasePresenter {
     @Inject
     OkHttpClient okHttpClient;
+    private HomeFragmet mHomeFragment;
+    private RxOperateImpl rxOperate;
 
     public HomePresenter() {
         DaggerHomeComponent.builder().
@@ -41,28 +45,15 @@ public class HomePresenter extends BasePresenter {
                 inject(this);
     }
 
+    public HomePresenter(HomeFragmet homeFragmet) {
+        this.mHomeFragment=homeFragmet;
+        rxOperate = new RxOperateImpl();
+    }
+
     //向M层请求数据
     @Override
     public void start(Object obj) {
         super.start(obj);
-        Request build = new Request.Builder().url(Constants.CHAPTERS_LIST).get().build();
-        Call call = okHttpClient.newCall(build);
-        call.enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                Log.e("TAG","----------------------------------------------------"+e.getMessage());
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                String string = response.body().string();
-                ChaptersListInfo chaptersListInfo = new Gson().fromJson(string, ChaptersListInfo.class);
-                String name = chaptersListInfo.getData().get(0).getName();
-                Log.e("TAG","---------------------------------------------"+name);
-            }
-        });
-
-        Log.e("TAG", this.okHttpClient.toString());
         if (obj instanceof Integer) {
             Integer type = (Integer) obj;
             switch (type) {
@@ -77,6 +68,35 @@ public class HomePresenter extends BasePresenter {
                     break;
                 case 3:
                     Log.e("TAG", "第四个Fragment开始加载数据了....");
+                    rxOperate.requestData(Constants.CHAPTERS_LIST, new IDataCallBack<Object>() {
+
+                        @Override
+                        public void onStateSucess(Object o) {
+                                if (o instanceof ResponseBody){
+                                    ResponseBody body = (ResponseBody) o;
+                                    String jsonStr = null;
+                                    try {
+                                        jsonStr = body.string();
+                                        ChaptersListInfo chaptersListInfo = new Gson().fromJson(jsonStr, ChaptersListInfo.class);
+                                        mHomeFragment.stateScuess(chaptersListInfo);
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                        //交给V层更新UI
+                                        mHomeFragment.stateError(e.getMessage());
+                                    }
+                                }
+                        }
+
+                        @Override
+                        public void onStateError(String msg) {
+
+                        }
+
+                        @Override
+                        public void onResponseDisposable(Disposable disposable) {
+
+                        }
+                    });
                     break;
 
             }
